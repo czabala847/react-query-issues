@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { FiCheckCircle, FiInfo, FiMessageSquare } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { timeSince } from "../../helpers";
 import { getIssueComments, getIssueInfo } from "../hooks/useIssue";
 import { Issue, State } from "../interfaces";
 
@@ -9,7 +10,7 @@ interface Props {
 }
 
 export const IssueItem: React.FC<Props> = ({ issue }) => {
-  const { comments, user, title, state, number } = issue;
+  const { comments, user, title, state, number, created_at, labels } = issue;
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -52,9 +53,24 @@ export const IssueItem: React.FC<Props> = ({ issue }) => {
         <div className="d-flex flex-column flex-fill px-2">
           <span>{title}</span>
           <span className="issue-subinfo">
-            #{number} opened 2 days ago by{" "}
+            #{number} opened {timeSince(created_at)} by{" "}
             <span className="fw-bold">{user.login}</span>
           </span>
+
+          <div>
+            {labels.map((label) => (
+              <span
+                style={{
+                  backgroundColor: `#${label.color}`,
+                  color: "black",
+                }}
+                key={label.id}
+                className="badge rounded-pill m-1"
+              >
+                {label.name}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="d-flex align-items-center">
